@@ -49,7 +49,7 @@ BIAS = 0.0
 SENSOR_MAX = 20.0 - 1.0
 
 # minimum backlight value
-MIN_BACKLIGHT = 5.
+MIN_BACKLIGHT = 10.
 
 # maximum backlight value
 MAX_BACKLIGHT = 100.
