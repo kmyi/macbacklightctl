@@ -54,6 +54,9 @@ MIN_BACKLIGHT = 5.
 # maximum backlight value
 MAX_BACKLIGHT = 100.
 
+############################################################
+# code
+
 # wait random amount
 sleep(random())
 
