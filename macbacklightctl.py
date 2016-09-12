@@ -46,7 +46,7 @@ SLEEP_TIME = 1
 BIAS = 0.0
 
 # sensor truncate value
-SENSOR_MAX = 20.0 - 1.0
+SENSOR_MAX = 100.0 - 1.0
 
 # minimum backlight value
 MIN_BACKLIGHT = 10.
@@ -76,7 +76,7 @@ else:
     lightmax = log(SENSOR_MAX + 1., 2.)
 
     # Sensor value to control value conversion
-    val_to_ctl = (MAX_BACKLIGHT - MIN_BACKLIGHT) / (lightmax + BIAS)
+    val_to_ctl = (MAX_BACKLIGHT - MIN_BACKLIGHT)
 
     # Read ambient sensor value to get initial lighting
     with open("/sys/devices/platform/applesmc.768/light",
