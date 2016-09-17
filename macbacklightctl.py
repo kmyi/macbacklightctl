@@ -40,7 +40,7 @@ from time import sleep
 # configurations
 
 # sleep time in seconds
-SLEEP_TIME = 1
+SLEEP_TIME = 10
 
 # sensor bias
 BIAS = 0.0
