@@ -40,19 +40,22 @@ from time import sleep
 # configurations
 
 # sleep time in seconds
-SLEEP_TIME = 10
+SLEEP_TIME = 1
 
 # sensor bias
 BIAS = 0.0
 
 # sensor truncate value
-SENSOR_MAX = 100.0 - 1.0
+SENSOR_MAX = 50.0 - 1.0
 
 # minimum backlight value
 MIN_BACKLIGHT = 10.
 
 # maximum backlight value
 MAX_BACKLIGHT = 100.
+
+# number of measurements to check light stability
+NUM_MEASURES = 5
 
 ############################################################
 # code
@@ -92,14 +95,14 @@ else:
 
     # set backlight initially
     check_output(("xbacklight", "=", str(int(new_backlight))))
+    # update prev_lightval
+    prev_lightval = lightval
 
     # Initial sleep
     sleep(SLEEP_TIME)
 
+    lightvals = [lightval] * NUM_MEASURES
     while True:
-
-        # update prev_lightval
-        prev_lightval = lightval
 
         # Read ambient sensor value
         with open("/sys/devices/platform/applesmc.768/light",
@@ -110,12 +113,23 @@ else:
         # Do log scaling
         lightval = (log(float(lightval + 1), 2.) + BIAS) / (lightmax + BIAS)
 
-        # If lightlevel changed
-        if lightval != prev_lightval:
-            # adjust it to get the new value
-            new_backlight = MIN_BACKLIGHT + lightval * val_to_ctl
-            # set backlight
-            check_output(("xbacklight", "=", str(int(new_backlight))))
+        # append to list and check stability
+        lightvals = [lightval] + lightvals[:-1]
+        # print("lightvals == {}".format(lightvals))
+
+        # if stable (i.e. single unique sensor value)
+        if len(set(lightvals)) == 1:
+            # print("sensor is stable")
+
+            # If lightlevel changed
+            if lightval != prev_lightval:
+                # adjust it to get the new value
+                new_backlight = MIN_BACKLIGHT + lightval * val_to_ctl
+                # set backlight
+                check_output(("xbacklight", "=", str(int(new_backlight))))
+                # update prev_lightval
+                prev_lightval = lightval
+                # print("light ctl with lightval == {}".format(lightval))
 
         # sleep
         sleep(SLEEP_TIME)
